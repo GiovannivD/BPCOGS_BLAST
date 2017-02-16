@@ -3,7 +3,7 @@ import os
 
 def create_db(schimmels):
     for item in schimmels:
-        db_string = "formatdb -i /Proteoom_" + item + ".fasta -pF"
+        db_string = "formatdb -i Proteomes/Proteoom_" + item + ".fasta -pT"
         os.system(db_string)
 
 
@@ -27,14 +27,13 @@ def blast(schimmels):
                 file_name = file_schim_1 + "*" + file_schim_2
                 file_list.append(file_name)
 
-                blast_string = "blastall -i Proteoom_" + schimmel_1 + \
-                               ".fasta -d Proteoom_" + schimmel_2 + \
-                               ".fasta -p blastp -m9 -O BLAST/blast_" \
+                blast_string = "blastall -i Proteomes/Proteoom_" + schimmel_1 + \
+                               ".fasta -d Proteomes/Proteoom_" + schimmel_2 + \
+                               ".fasta -p blastp -m9 > BLAST/blast_" \
                                + file_name + ".txt"
-                print(blast_string)
-                #os.system(blast_string)
+                #print(blast_string)
+                os.system(blast_string)
 
-        #Draait hier de lijst om
         schimmels = schimmels[::-1]
 
     return file_list
@@ -50,9 +49,9 @@ def hits(b_file_list):
                         "BLAST/blast_" + file + \
                         ".txt | sed 's/# Fields: mismatches,/@/g' | " \
                         "awk '/@/{getline; print}' | egrep -v ^# " \
-                        "-O HITS/hits_" + file + ".txt"
-        #os.system(filter_string)
-        print(filter_string)
+                        "> HITS/hits_" + file + ".txt"
+        os.system(filter_string)
+        #print(filter_string)
 
 
 def main():
@@ -64,7 +63,8 @@ def main():
                      #"Saccharomyces_cerevisea", "Trichoderma_atroviride",
                      #"Trichoderma_virens"]
 
-    #create_db(schimmel_list)
+    create_db(schimmel_list)
+    print("Bezig met BLASTen...")
     b_file_list = blast(schimmel_list)
     hits(b_file_list)
 
