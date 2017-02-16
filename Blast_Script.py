@@ -40,7 +40,7 @@ def blast(schimmels):
     return file_list
 
 
-def split(b_file_list):
+def hits(b_file_list):
     """Haalt de eerste hits uit een BLAST en zet deze in een aparte
     file in de map HITS. Dit wordt gedaan voor elke BLAST die is
     uitgevoerd."""
@@ -66,6 +66,6 @@ def main():
 
     #create_db(schimmel_list)
     b_file_list = blast(schimmel_list)
-    split(b_file_list)
+    hits(b_file_list)
 
 main()
