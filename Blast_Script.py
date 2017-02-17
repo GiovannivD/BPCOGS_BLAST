@@ -7,6 +7,7 @@ def create_db(schimmels):
         #os.system(db_string)
         print(db_string)
 
+
 def blast(schimmels):
     """Hier wordt elke BLAST uitgevoerd, elk proteoom wordt tegen elk
     proteoom geBLAST en vice versa"""
@@ -31,7 +32,6 @@ def blast(schimmels):
                                ".fasta -d Proteomes/Proteoom_" + schimmel_2 + \
                                ".fasta -p blastp -m9 > BLAST/blast_" \
                                + file_name + ".txt"
-                      
                 #os.system(blast_string)
                 print(blast_string)
 
@@ -46,15 +46,20 @@ def hits(b_file_list):
     uitgevoerd."""
 
     for file_name in b_file_list:
-        filter_string = "awk '{print $1, $2, $11}' " \
+        filter_string = "awk '{if($11 < 0.0001){print $1, $2, $11}}' " \
                         "BLAST/blast_" + file_name + \
-                        ".txt | sed 's/# Fields: mismatches,/@/g' | " \
-                        "awk '/@/{getline; print}' | egrep -v ^# " \
+                        ".txt | egrep -A1 ^# | egrep \"^[^#-]\" >" \
                         "> HITS/hits_" + file_name + ".txt"
-        
         #os.system(filter_string)
         print(filter_string)
-      
+
+def directional_hit(b_file_list):
+    for name_file in b_file_list:
+        turn_string = "awk '{print $2, $1}' HITS/hits_" + name_file + \
+                      ".txt > turned_" + name_file + ".txt"
+
+
+
 
 def main():
     os.system("mkdir -p BLAST HITS")
@@ -68,6 +73,8 @@ def main():
     create_db(schimmel_list)
     print("Bezig met BLASTen...")
     b_file_list = blast(schimmel_list)
+    print(b_file_list)
     hits(b_file_list)
+    #directional_hit(b_file_list)
 
 main()
