@@ -4,8 +4,8 @@ import os
 def create_db(schimmels):
     for item in schimmels:
         db_string = "formatdb -i Proteomes/Proteoom_" + item + ".fasta -pT"
-        os.system(db_string)
-
+        #os.system(db_string)
+        print(db_string)
 
 def blast(schimmels):
     """Hier wordt elke BLAST uitgevoerd, elk proteoom wordt tegen elk
@@ -31,8 +31,9 @@ def blast(schimmels):
                                ".fasta -d Proteomes/Proteoom_" + schimmel_2 + \
                                ".fasta -p blastp -m9 > BLAST/blast_" \
                                + file_name + ".txt"
-                #print(blast_string)
-                os.system(blast_string)
+                      
+                #os.system(blast_string)
+                print(blast_string)
 
         schimmels = schimmels[::-1]
 
@@ -44,18 +45,19 @@ def hits(b_file_list):
     file in de map HITS. Dit wordt gedaan voor elke BLAST die is
     uitgevoerd."""
 
-    for file in b_file_list:
+    for file_name in b_file_list:
         filter_string = "awk '{print $1, $2, $11}' " \
-                        "BLAST/blast_" + file + \
+                        "BLAST/blast_" + file_name + \
                         ".txt | sed 's/# Fields: mismatches,/@/g' | " \
                         "awk '/@/{getline; print}' | egrep -v ^# " \
-                        "> HITS/hits_" + file + ".txt"
-        os.system(filter_string)
-        #print(filter_string)
-
+                        "> HITS/hits_" + file_name + ".txt"
+        
+        #os.system(filter_string)
+        print(filter_string)
+      
 
 def main():
-    os.system("mkdir BLAST HITS")
+    os.system("mkdir -p BLAST HITS")
     schimmel_list = ["Ashbya_gossypii", "Aspergillus_nidulans",
                      "Neurospora_crassa"]
                      #"Penicillium_canescens", "Penicillium_raistrickii",
