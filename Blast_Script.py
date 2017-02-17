@@ -53,28 +53,39 @@ def hits(b_file_list):
         #os.system(filter_string)
         print(filter_string)
 
-def directional_hit(b_file_list):	
+
+def directional_hit(b_file_list):
     for x in b_file_list:
-	x = x.replace('*', '')
-	deel1, deel2 = x[:len(x)/2], x[len(x)/2:]
+        print("1======", b_file_list)
+        x = x.replace('*', '')
+        deel1, deel2 = x[:len(x)/2], x[len(x)/2:]
+        print("D1:", deel1)
+        print("D2:", deel2)
 
-	turn_string = "awk '{print $2, $1}' HITS/hits_" + deel1 + "*" + deel2 + \
-                      	      ".txt > turned_" + deel1 + "*"+ deel2 + ".txt"
-	b_file_list.remove(deel1+'*'+deel2)
+        turn_string = "awk '{print $2, $1}' HITS/hits_" + deel1 + "*" + \
+                      deel2 + ".txt > turned_" + deel1 + "*"+ deel2 + ".txt"
+        b_file_list.remove(deel1 + "*" + deel2)
 
-	two_column = "awk '{print $1, $2}' HITS/hits_" + deel2 + "*" + deel1 + \
-			     ".txt > twocolumn_" + deel2 + "*" + deel1 ".txt"
-	b_file_list.remove(deel2+'*'+deel1)
-	
-	os.system(turn_string)
-	os.system(two_column)
+        two_column = "awk '{print $1, $2}' HITS/hits_" + deel2 + "*" + \
+                     deel1 + ".txt > twocolumn_" + deel2 + "*" + deel1 + ".txt"
+        b_file_list.remove(deel2 + "*" + deel1)
 
-	duplicaten = "sort turned_" deel1 + "*" + deel2 + " twocolumn_" + deel2 + "*" \
-		     + deel1 + "| awk 'dup[$0]++ == 1' > zelfde_" + deel1 + deel2 + ".txt"
-	os.system(duplicaten)
+        print(turn_string)
+        print(two_column)
+        os.system(turn_string)
+        os.system(two_column)
+
+        duplicaten = "sort turned_" + deel1 + "*" + deel2 + ".txt twocolumn_" + \
+                     deel2 + "*" + deel1 + \
+                     ".txt | awk 'dup[$0]++ == 1' > BDH/bdh_" + deel1 + deel2 \
+                     + ".txt"
+
+        os.system(duplicaten)
+        print("2======", b_file_list)
+
 
 def main():
-    os.system("mkdir -p BLAST HITS")
+    os.system("mkdir -p BLAST HITS BDH")
     schimmel_list = ["Ashbya_gossypii", "Aspergillus_nidulans",
                      "Neurospora_crassa"]
                      #"Penicillium_canescens", "Penicillium_raistrickii",
@@ -82,11 +93,11 @@ def main():
                      #"Saccharomyces_cerevisea", "Trichoderma_atroviride",
                      #"Trichoderma_virens"]
 
-    create_db(schimmel_list)
-    print("Bezig met BLASTen...")
+    #create_db(schimmel_list)
+    #print("Bezig met BLASTen...")
     b_file_list = blast(schimmel_list)
-    print(b_file_list)
-    hits(b_file_list)
-    #directional_hit(b_file_list)
+    #print(b_file_list)
+    #hits(b_file_list)
+    directional_hit(b_file_list)
 
 main()
