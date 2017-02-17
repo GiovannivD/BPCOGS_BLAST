@@ -53,13 +53,25 @@ def hits(b_file_list):
         #os.system(filter_string)
         print(filter_string)
 
-def directional_hit(b_file_list):
-    for name_file in b_file_list:
-        turn_string = "awk '{print $2, $1}' HITS/hits_" + name_file + \
-                      ".txt > turned_" + name_file + ".txt"
+def directional_hit(b_file_list):	
+    for x in b_file_list:
+	x = x.replace('*', '')
+	deel1, deel2 = x[:len(x)/2], x[len(x)/2:]
 
+	turn_string = "awk '{print $2, $1}' HITS/hits_" + deel1 + "*" + deel2 + \
+                      	      ".txt > turned_" + deel1 + "*"+ deel2 + ".txt"
+	b_file_list.remove(deel1+'*'+deel2)
 
+	two_column = "awk '{print $1, $2}' HITS/hits_" + deel2 + "*" + deel1 + \
+			     ".txt > twocolumn_" + deel2 + "*" + deel1 ".txt"
+	b_file_list.remove(deel2+'*'+deel1)
+	
+	os.system(turn_string)
+	os.system(two_column)
 
+	duplicaten = "sort turned_" deel1 + "*" + deel2 + " twocolumn_" + deel2 + "*" \
+		     + deel1 + "| awk 'dup[$0]++ == 1' > zelfde_" + deel1 + deel2 + ".txt"
+	os.system(duplicaten)
 
 def main():
     os.system("mkdir -p BLAST HITS")
