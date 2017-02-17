@@ -7,7 +7,6 @@ def create_db(schimmels):
         #os.system(db_string)
         print(db_string)
 
-
 def blast(schimmels):
     """Hier wordt elke BLAST uitgevoerd, elk proteoom wordt tegen elk
     proteoom geBLAST en vice versa"""
@@ -32,6 +31,7 @@ def blast(schimmels):
                                ".fasta -d Proteomes/Proteoom_" + schimmel_2 + \
                                ".fasta -p blastp -m9 > BLAST/blast_" \
                                + file_name + ".txt"
+                      
                 #os.system(blast_string)
                 print(blast_string)
 
@@ -51,9 +51,10 @@ def hits(b_file_list):
                         ".txt | sed 's/# Fields: mismatches,/@/g' | " \
                         "awk '/@/{getline; print}' | egrep -v ^# " \
                         "> HITS/hits_" + file_name + ".txt"
+        
         #os.system(filter_string)
         print(filter_string)
-
+      
 
 def main():
     os.system("mkdir -p BLAST HITS")
