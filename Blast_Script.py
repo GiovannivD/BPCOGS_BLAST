@@ -2,15 +2,18 @@
 import os
 
 def create_db(schimmels):
+    print("Databases aanmaken...")
     for item in schimmels:
         db_string = "formatdb -i Proteomes/Proteoom_" + item + ".fasta -pT"
-        #os.system(db_string)
-        print(db_string)
+        os.system(db_string)
+        #print(db_string)
+    print("Gelukt!")
 
 
 def blast(schimmels):
     """Hier wordt elke BLAST uitgevoerd, elk proteoom wordt tegen elk
     proteoom geBLAST en vice versa"""
+    #print("Bezig met BLASTen...")
     file_list = []
     for x in range(2):
         for i in range(len(schimmels)):
@@ -32,8 +35,10 @@ def blast(schimmels):
                                ".fasta -d Proteomes/Proteoom_" + schimmel_2 + \
                                ".fasta -p blastp -m9 > BLAST/blast_" \
                                + file_name + ".txt"
-                #os.system(blast_string)
-                print(blast_string)
+                print("BLAST #" + str(j) + "...")
+                os.system(blast_string)
+		print("Gelukt!")
+                #print(blast_string)
 
         schimmels = schimmels[::-1]
 
@@ -44,17 +49,19 @@ def hits(b_file_list):
     """Haalt de eerste hits uit een BLAST en zet deze in een aparte
     file in de map HITS. Dit wordt gedaan voor elke BLAST die is
     uitgevoerd."""
-
     for file_name in b_file_list:
         filter_string = "awk '{if($11 < 0.0001){print $1, $2, $11}}' " \
                         "BLAST/blast_" + file_name + \
                         ".txt | egrep -A1 ^# | egrep \"^[^#-]\" >" \
                         "> HITS/hits_" + file_name + ".txt"
-        #os.system(filter_string)
-        print(filter_string)
+        print("Beste hits vinden voor: " + file_name)
+	os.system(filter_string)
+        #print(filter_string)
+    	print("Gelukt!")
 
 
 def directional_hit(b_file_list):
+    print("BDH vinden...")
     while range(len(b_file_list)) > 0:
         for x in b_file_list:
             #print("Start:", b_file_list)
@@ -81,22 +88,20 @@ def directional_hit(b_file_list):
 
             os.system(duplicaten)
             #print("Eind:", b_file_list)
-
+    print("Gelukt!")
 
 def main():
     os.system("mkdir -p BLAST HITS BDH Modified")
     schimmel_list = ["Ashbya_gossypii", "Aspergillus_nidulans",
-                     "Neurospora_crassa"]
-                     #"Penicillium_canescens", "Penicillium_raistrickii",
-                     #"Phanerochaete_chrysosporium", "Rhizoctonia_solani",
-                     #"Saccharomyces_cerevisea", "Trichoderma_atroviride",
-                     #"Trichoderma_virens"]
+                     "Neurospora_crassa",
+                     "Penicillium_canescens", "Penicillium_raistrickii",
+                     "Phanerochaete_chrysosporium", "Rhizoctonia_solani",
+                     "Saccharomyces_cerevisea", "Trichoderma_atroviride",
+                     "Trichoderma_virens"]
 
-    #create_db(schimmel_list)
-    #print("Bezig met BLASTen...")
+    create_db(schimmel_list)
     b_file_list = blast(schimmel_list)
-    #print(b_file_list)
-    #hits(b_file_list)
+    hits(b_file_list)
     directional_hit(b_file_list)
 
 main()
