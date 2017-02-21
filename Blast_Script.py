@@ -2,12 +2,12 @@
 import os
 
 def create_db(schimmels):
-    print("Databases aanmaken...")
+    print("Creating databases...")
     for item in schimmels:
         db_string = "formatdb -i Proteomes/Proteoom_" + item + ".fasta -pT"
         os.system(db_string)
         #print(db_string)
-    print("Gelukt!")
+    print("SUCCESS")
 
 
 def blast(schimmels):
@@ -30,15 +30,15 @@ def blast(schimmels):
                 file_name = file_schim_1 + "*" + file_schim_2
                 file_list.append(file_name)
 
+                #Met threshold: -e 0.0001
                 blast_string = "blastall -i Proteomes/Proteoom_" + schimmel_1 + \
                                ".fasta -d Proteomes/Proteoom_" + schimmel_2 + \
                                ".fasta -p blastp -e 0.0001 -m9 > " \
                                "BLAST/blast_" + file_name + ".txt"
 
-                print("BLAST: " + file_name + "...")
+                print("BLAST-ing " + file_name + "...")
                 os.system(blast_string)
-                #print(blast_string)
-                print("Gelukt!")
+                print("SUCCESS")
 
         schimmels = schimmels[::-1]
 
@@ -57,7 +57,7 @@ def hits(b_file_list):
         print("Beste hits vinden voor: " + file_name)
         os.system(filter_string)
         #print(filter_string)
-        print("Gelukt!")
+        print("SUCCESS")
 
 
 def directional_hit(b_file_list):
@@ -88,15 +88,15 @@ def directional_hit(b_file_list):
 
             os.system(duplicaten)
             #print("Eind:", b_file_list)
-    print("Gelukt!")
+    print("SUCCESS")
 
 def main():
     os.system("mkdir -p BLAST HITS BDH Modified")
     schimmel_list = ["Ashbya_gossypii", "Aspergillus_nidulans",
-                     "Neurospora_crassa"]#, "Penicillium_canescens",
-                     #"Penicillium_raistrickii", "Phanerochaete_chrysosporium",
-                     #"Rhizoctonia_solani", "Saccharomyces_cerevisea",
-                     #"Trichoderma_atroviride", "Trichoderma_virens"]
+                     "Neurospora_crassa", "Penicillium_canescens",
+                     "Penicillium_raistrickii", "Phanerochaete_chrysosporium",
+                     "Rhizoctonia_solani", "Saccharomyces_cerevisea",
+                     "Trichoderma_atroviride", "Trichoderma_virens"]
 
     create_db(schimmel_list)
     b_file_list = blast(schimmel_list)
