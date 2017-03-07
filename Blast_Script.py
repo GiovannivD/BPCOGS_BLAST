@@ -37,7 +37,7 @@ def blast(schimmels):
                                "BLAST/blast_" + file_name + ".txt"
 
                 print("BLAST-ing " + file_name + "...")
-                os.system(blast_string)
+                #os.system(blast_string)
                 print("SUCCESS")
 
         schimmels = schimmels[::-1]
@@ -62,7 +62,8 @@ def hits(b_file_list):
 
 def directional_hit(b_file_list):
     print("BDH vinden...")
-    while range(len(b_file_list)) > 0:
+    while len(b_file_list) > 0:
+        #print(len(b_file_list))
         for x in b_file_list:
             #print("Start:", b_file_list)
             x = x.replace('*', '')
